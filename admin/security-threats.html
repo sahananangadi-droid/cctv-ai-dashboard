@@ -1,27 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Threats - Admin</title>
     <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Header */
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0 24px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            background: #fff;
+            color: #1a1a2e;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px solid #ddd;
+            transition: background 0.2s;
+        }
+
+        nav a:hover {
+            background: #e8eaf6;
+        }
+
+        nav a.active {
+            background: #3949ab;
+            color: #fff;
+            border-color: #3949ab;
+        }
+
+        /* Section card */
+        .section {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px 24px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Stats + Chart row */
+        .stats-chart-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Donut chart card */
+        .chart-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 20px 24px;
+            flex: 1;
+            min-width: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart-card h2 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .donut-wrapper {
+            position: relative;
+            width: 180px;
+            height: 180px;
+        }
+
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .donut-center .donut-total {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+
+        .donut-center .donut-label {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-item span:last-child {
+            margin-left: auto;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        /* Stat cards column */
+        .stat-cards-col {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.red {
+            background: #fdecea;
+        }
+
+        .stat-icon.orange {
+            background: #fff3e0;
+        }
+
+        .stat-icon.blue {
+            background: #e3f2fd;
+        }
+
+        .stat-text .label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .stat-text .value {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .value.red {
+            color: #e74c3c;
+        }
+
+        .value.orange {
+            color: #e67e22;
+        }
+
+        .value.blue {
+            color: #2980b9;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f7f8fa;
+            text-align: left;
+            padding: 10px 12px;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Clickable rows */
+        tbody tr.clickable {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr.clickable:hover td {
+            background: #f0f4ff;
+        }
+
+        tbody tr.clickable.selected td {
+            background: #e8eaf6;
+        }
+
+        /* Status badge */
+        .status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status.unresolved {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .status.resolved {
+            background: #e8f5e9;
+            color: #27ae60;
+        }
+
+        /* Resolve button */
+        .btn-resolve {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #e8f5e9;
+            color: #27ae60;
+            transition: opacity 0.15s;
+        }
+
+        .btn-resolve:hover {
+            opacity: 0.75;
+        }
+
+        /* Details panel */
+        #details-panel {
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+        }
+
+        #details-panel h2 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .details-layout {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        /* Dark scene box */
+        .scene-box {
+            width: 200px;
+            min-height: 140px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 12px;
+            gap: 8px;
+            flex-shrink: 0;
+            border: 2px dashed #444;
+        }
+
+        .scene-box .cam-icon {
+            font-size: 32px;
+            opacity: 0.5;
+        }
+
+        /* Detail info rows */
+        .details-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .detail-row .dlabel {
+            color: #888;
+            min-width: 130px;
+        }
+
+        .detail-row .dvalue {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        /* Action buttons */
+        .details-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-track {
+            background: #fff3e0;
+            color: #e67e22;
+        }
+
+        .btn-close-det {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .btn-dismiss {
+            background: #f5f5f5;
+            color: #888;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
     <div class="page-container">
+
+        <!-- HEADER -->
         <div class="page-header">
             <h1>Security Threats</h1>
+            <p>Monitor, review and resolve detected campus security threats.</p>
         </div>
 
+        <!-- NAV — no logout as requested -->
         <nav>
             <a href="dashboard.html">Dashboard</a>
             <a href="cctv-feed.html">CCTV Feed</a>
             <a href="entry-history.html">Entry History</a>
-            <a href="../index.html">Logout</a>
+            <a href="security-threats.html" class="active">Security Threats</a>
         </nav>
 
+        <!-- ════════════════════════════════════════
+         STATS + DONUT CHART ROW
+         Left  → donut showing threat proportions
+         Right → 3 exact count cards
+         Both update live when threats are resolved
+    ═════════════════════════════════════════ -->
+        <div class="stats-chart-row">
+
+            <div class="chart-card">
+                <h2>Threat Overview</h2>
+                <div class="donut-wrapper">
+                    <canvas id="donutChart" role="img"
+                        aria-label="Donut chart: 3 potential threats, 7 unverified entries, 2 unrecognized entries.">
+                        Threats: 3 potential, 7 unverified, 2 unrecognized.
+                    </canvas>
+                    <div class="donut-center">
+                        <div class="donut-total" id="donut-total">12</div>
+                        <div class="donut-label">total</div>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:#e74c3c;"></div>
+                        Potential Threats
+                        <span id="legend-threats">3</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:#e67e22;"></div>
+                        Unverified Entries
+                        <span id="legend-unverified">7</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background:#2980b9;"></div>
+                        Unrecognized Entries
+                        <span id="legend-unrecognized">2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-cards-col">
+                <div class="stat-card">
+                    <div class="stat-icon red">⚠️</div>
+                    <div class="stat-text">
+                        <div class="label">Potential Threats</div>
+                        <div class="value red" id="count-threats">3</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">🔎</div>
+                    <div class="stat-text">
+                        <div class="label">Unverified Entries</div>
+                        <div class="value orange" id="count-unverified">7</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">👤</div>
+                    <div class="stat-text">
+                        <div class="label">Unrecognized Entries</div>
+                        <div class="value blue" id="count-unrecognized">2</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ════════════════════════════════════════
+         ACTIVE THREATS TABLE
+         - Entire row is clickable → opens details
+         - Resolve button moves row to Resolved
+           table and updates the donut chart
+         - Severity column removed as requested
+    ═════════════════════════════════════════ -->
         <div class="section">
-            <h2>Active Threats</h2>
+            <h2>Active Threats &nbsp;<small style="font-weight:400;color:#888;font-size:12px;">click a row to view scene
+                    details</small></h2>
             <table>
                 <thead>
                     <tr>
@@ -29,43 +526,103 @@
                         <th>Threat Type</th>
                         <th>Location</th>
                         <th>Detected At</th>
-                        <th>Severity</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
+                <tbody id="active-threats-body">
+
+                    <tr class="clickable" onclick="selectRow(this)" data-type="Unrecognized Face" data-location="Gate A"
+                        data-entry="2026-04-14 08:32" data-exit="—" data-vstatus="Unverified">
                         <td>1</td>
-                        <td>[ Threat Type ]</td>
-                        <td>[ Location ]</td>
-                        <td>[ Timestamp ]</td>
-                        <td>[ Low / Medium / High ]</td>
-                        <td>[ Unresolved ]</td>
-                        <td><button>Resolve</button></td>
+                        <td>Unrecognized Face</td>
+                        <td>Gate A</td>
+                        <td>2026-04-14 08:32</td>
+                        <td><span class="status unresolved">Unresolved</span></td>
+                        <td><button class="btn-resolve" onclick="resolveRow(event,this)">Resolve</button></td>
                     </tr>
-                    <tr>
+
+                    <tr class="clickable" onclick="selectRow(this)" data-type="Tailgating Detected"
+                        data-location="Building B Entrance" data-entry="2026-04-14 09:15" data-exit="—"
+                        data-vstatus="Unverified">
                         <td>2</td>
-                        <td>[ Threat Type ]</td>
-                        <td>[ Location ]</td>
-                        <td>[ Timestamp ]</td>
-                        <td>[ Low / Medium / High ]</td>
-                        <td>[ Unresolved ]</td>
-                        <td><button>Resolve</button></td>
+                        <td>Tailgating Detected</td>
+                        <td>Building B Entrance</td>
+                        <td>2026-04-14 09:15</td>
+                        <td><span class="status unresolved">Unresolved</span></td>
+                        <td><button class="btn-resolve" onclick="resolveRow(event,this)">Resolve</button></td>
                     </tr>
-                    <tr>
+
+                    <tr class="clickable" onclick="selectRow(this)" data-type="Restricted Area Access"
+                        data-location="Lab C" data-entry="2026-04-14 10:47" data-exit="—" data-vstatus="Unverified">
                         <td>3</td>
-                        <td>[ Threat Type ]</td>
-                        <td>[ Location ]</td>
-                        <td>[ Timestamp ]</td>
-                        <td>[ Low / Medium / High ]</td>
-                        <td>[ Unresolved ]</td>
-                        <td><button>Resolve</button></td>
+                        <td>Restricted Area Access</td>
+                        <td>Lab C</td>
+                        <td>2026-04-14 10:47</td>
+                        <td><span class="status unresolved">Unresolved</span></td>
+                        <td><button class="btn-resolve" onclick="resolveRow(event,this)">Resolve</button></td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
 
+        <!-- ════════════════════════════════════════
+         THREAT DETAILS PANEL
+         Hidden until a row is clicked.
+         Shows scene screenshot + all info fields
+         + Track / Dismiss buttons.
+         Matches flowchart: "Threat Details"
+                          + "Track / Dismiss"
+    ═════════════════════════════════════════ -->
+        <div id="details-panel">
+            <h2>Threat Details</h2>
+            <div class="details-layout">
+
+                <!-- Camera scene placeholder -->
+                <div class="scene-box">
+                    <div class="cam-icon">📷</div>
+                    <div>Scene Screenshot</div>
+                    <div style="font-size:10px;color:#555;">Camera feed placeholder</div>
+                </div>
+
+                <!-- Info fields filled by JS -->
+                <div class="details-info">
+                    <div class="detail-row">
+                        <span class="dlabel">Threat Type</span>
+                        <span class="dvalue" id="d-type">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="dlabel">Location</span>
+                        <span class="dvalue" id="d-location">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="dlabel">Time of Entry</span>
+                        <span class="dvalue" id="d-entry">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="dlabel">Time of Exit</span>
+                        <span class="dvalue" id="d-exit">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="dlabel">Verification Status</span>
+                        <span class="dvalue" id="d-vstatus">—</span>
+                    </div>
+
+                    <div class="details-actions">
+                        <button class="btn btn-track" onclick="trackThreat()">Track</button>
+                        <button class="btn btn-dismiss" onclick="closeDetails()">Dismiss</button>
+                        <button class="btn btn-close-det" onclick="closeDetails()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════════════
+         RESOLVED THREATS TABLE
+         Empty on load. Rows added automatically
+         when "Resolve" is clicked above.
+    ═════════════════════════════════════════ -->
         <div class="section">
             <h2>Resolved Threats</h2>
             <table>
@@ -76,15 +633,14 @@
                         <th>Location</th>
                         <th>Detected At</th>
                         <th>Resolved At</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>[ Threat Type ]</td>
-                        <td>[ Location ]</td>
-                        <td>[ Timestamp ]</td>
-                        <td>[ Timestamp ]</td>
+                <tbody id="resolved-threats-body">
+                    <tr id="no-resolved-row">
+                        <td colspan="6" style="text-align:center;color:#aaa;padding:20px;">
+                            No resolved threats yet.
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -93,7 +649,142 @@
         <div class="page-footer">
             <p>Campus Security System &copy; 2026 — Admin Panel</p>
         </div>
+
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+
+        /* ── DONUT CHART ─────────────────────────────
+           Shows proportion of all 3 threat categories.
+           Updates automatically when a threat is resolved.
+        ──────────────────────────────────────────────── */
+        const donutChart = new Chart(
+            document.getElementById('donutChart').getContext('2d'),
+            {
+                type: 'doughnut',
+                data: {
+                    labels: ['Potential Threats', 'Unverified Entries', 'Unrecognized Entries'],
+                    datasets: [{
+                        data: [3, 7, 2],
+                        backgroundColor: ['#e74c3c', '#e67e22', '#2980b9'],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    cutout: '68%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ' ' + ctx.label + ': ' + ctx.parsed
+                            }
+                        }
+                    }
+                }
+            }
+        );
+
+        /* Updates chart + all counters + legend numbers */
+        function updateChart(threats, unverified, unrecognized) {
+            donutChart.data.datasets[0].data = [threats, unverified, unrecognized];
+            donutChart.update();
+            const total = threats + unverified + unrecognized;
+            document.getElementById('donut-total').textContent = total;
+            document.getElementById('count-threats').textContent = threats;
+            document.getElementById('count-unverified').textContent = unverified;
+            document.getElementById('count-unrecognized').textContent = unrecognized;
+            document.getElementById('legend-threats').textContent = threats;
+            document.getElementById('legend-unverified').textContent = unverified;
+            document.getElementById('legend-unrecognized').textContent = unrecognized;
+        }
+
+        /* ── ROW SELECTION ───────────────────────────
+           Clicking a row highlights it and fills
+           the details panel below with its data.
+           Clicking the same row again closes panel.
+        ──────────────────────────────────────────────── */
+        let activeRow = null;
+
+        function selectRow(row) {
+            if (activeRow) activeRow.classList.remove('selected');
+            if (activeRow === row) { activeRow = null; closeDetails(); return; }
+            activeRow = row;
+            row.classList.add('selected');
+            document.getElementById('d-type').textContent = row.dataset.type;
+            document.getElementById('d-location').textContent = row.dataset.location;
+            document.getElementById('d-entry').textContent = row.dataset.entry;
+            document.getElementById('d-exit').textContent = row.dataset.exit;
+            document.getElementById('d-vstatus').textContent = row.dataset.vstatus;
+            const panel = document.getElementById('details-panel');
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        /* ── CLOSE DETAILS ───────────────────────────── */
+        function closeDetails() {
+            document.getElementById('details-panel').style.display = 'none';
+            if (activeRow) { activeRow.classList.remove('selected'); activeRow = null; }
+        }
+
+        /* ── TRACK THREAT ────────────────────────────
+           Flags the open threat for follow-up.
+           Replace alert() with real logic later.
+        ──────────────────────────────────────────────── */
+        function trackThreat() {
+            alert('Flagged for tracking:\n' + document.getElementById('d-type').textContent);
+        }
+
+        /* ── RESOLVE ROW ─────────────────────────────
+           Moves a threat from Active → Resolved.
+           Decrements Potential Threats count by 1.
+           Updates the donut chart live.
+        ──────────────────────────────────────────────── */
+        function resolveRow(event, btn) {
+            event.stopPropagation();  /* stop row click from firing */
+            const row = btn.closest('tr');
+            const cells = row.querySelectorAll('td');
+            const type = cells[1].textContent;
+            const loc = cells[2].textContent;
+            const det = cells[3].textContent;
+            const resAt = new Date().toLocaleString();
+
+            /* Remove "No resolved threats" placeholder */
+            const noRow = document.getElementById('no-resolved-row');
+            if (noRow) noRow.remove();
+
+            /* Add row to Resolved table */
+            const tbody = document.getElementById('resolved-threats-body');
+            const n = tbody.querySelectorAll('tr').length + 1;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+            <td>${n}</td>
+            <td>${type}</td>
+            <td>${loc}</td>
+            <td>${det}</td>
+            <td>${resAt}</td>
+            <td><span class="status resolved">Resolved</span></td>
+        `;
+            tbody.appendChild(newRow);
+
+            /* Close panel if this row was open */
+            if (activeRow === row) closeDetails();
+
+            /* Remove from Active table */
+            row.remove();
+
+            /* Update chart counts */
+            const t = parseInt(document.getElementById('count-threats').textContent);
+            const u = parseInt(document.getElementById('count-unverified').textContent);
+            const ur = parseInt(document.getElementById('count-unrecognized').textContent);
+            updateChart(Math.max(0, t - 1), u, ur);
+        }
+
+    </script>
 </body>
+
 </html>
