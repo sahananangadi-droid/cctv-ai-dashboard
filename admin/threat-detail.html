@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Detail — GeoVision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --clr-primary:#dc2626; --clr-primary-light:#ef4444; --clr-primary-dark:#b91c1c;
+            --clr-primary-ghost:rgba(220,38,38,0.08); --clr-danger-ghost:rgba(220,38,38,0.10);
+            --clr-warning:#f59e0b; --clr-warning-ghost:rgba(245,158,11,0.10);
+            --clr-success:#22c55e; --clr-success-ghost:rgba(34,197,94,0.10);
+            --bg-body:#f5f5f5; --bg-sidebar:#111111; --bg-card:#ffffff;
+            --text-primary:#111111; --text-secondary:#555555; --text-tertiary:#999999;
+            --text-sidebar:#cccccc; --border-light:#e4e4e4;
+            --sidebar-width:260px; --radius-sm:6px; --radius-md:10px;
+            --radius-lg:14px; --radius-full:9999px; --transition-fast:150ms ease;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html{font-size:14px;}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);color:var(--text-primary);line-height:1.6;min-height:100vh;}
+        a{text-decoration:none;color:inherit;}
+        button{font-family:inherit;cursor:pointer;border:none;outline:none;background:none;}
+
+        #app-shell{display:flex;min-height:100vh;}
+
+        /* ── SIDEBAR ── */
+        .sidebar{width:var(--sidebar-width);background:var(--bg-sidebar);color:var(--text-sidebar);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+        .sidebar-header{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08);}
+        .sidebar-logo{display:flex;align-items:center;gap:12px;}
+        .sidebar-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--clr-primary-light),var(--clr-primary-dark));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;}
+        .sidebar-logo-text{font-size:15px;font-weight:700;color:#fff;line-height:1.3;}
+        .sidebar-logo-text span{display:block;font-size:11px;font-weight:400;color:var(--text-sidebar);letter-spacing:0.5px;text-transform:uppercase;}
+        .sidebar-profile{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;}
+        .sidebar-avatar{width:40px;height:40px;border-radius:var(--radius-full);background:linear-gradient(135deg,#ef4444,#991b1b);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0;}
+        .sidebar-profile-info{flex:1;min-width:0;}
+        .sidebar-profile-name{font-size:13px;font-weight:600;color:#fff;}
+        .sidebar-profile-role{font-size:11px;color:var(--text-sidebar);}
+        .sidebar-status-dot{width:8px;height:8px;border-radius:50%;background:var(--clr-success);box-shadow:0 0 6px rgba(34,197,94,0.5);flex-shrink:0;}
+        .sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto;}
+        .sidebar-nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:rgba(200,200,200,0.4);padding:8px 14px 6px;}
+        .sidebar-nav-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--radius-md);font-size:13px;font-weight:500;color:var(--text-sidebar);cursor:pointer;transition:all var(--transition-fast);margin-bottom:2px;position:relative;}
+        .sidebar-nav-item:hover{background:rgba(255,255,255,0.07);color:#fff;}
+        .sidebar-nav-item.active{background:linear-gradient(135deg,rgba(220,38,38,0.22),rgba(185,28,28,0.16));color:#fff;font-weight:600;}
+        .sidebar-nav-item.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--clr-primary-light);border-radius:0 3px 3px 0;}
+        .sidebar-nav-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);}
+        .sidebar-footer-btn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:var(--radius-sm);font-size:12px;color:var(--text-sidebar);transition:all var(--transition-fast);}
+        .sidebar-footer-btn:hover{background:rgba(255,255,255,0.07);color:#fff;}
+
+        /* ── MAIN ── */
+        .main-content{flex:1;margin-left:var(--sidebar-width);min-height:100vh;display:flex;flex-direction:column;}
+        .topbar{position:sticky;top:0;z-index:50;background:var(--bg-card);border-bottom:1px solid var(--border-light);padding:12px 28px;display:flex;align-items:center;gap:12px;}
+        .back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--clr-primary);font-weight:500;}
+        .back-link:hover{text-decoration:underline;}
+        .topbar-breadcrumb{font-size:13px;color:var(--text-tertiary);}
+        .topbar-breadcrumb span{color:var(--text-primary);font-weight:600;}
+
+        .page-body{padding:24px 28px 40px;max-width:860px;}
+
+        /* ── CARDS ── */
+        .card{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;}
+        .card h2{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text-primary);}
+
+        /* Profile header */
+        .profile-header{display:flex;gap:20px;align-items:center;margin-bottom:24px;flex-wrap:wrap;}
+        .avatar{width:72px;height:72px;border-radius:var(--radius-full);background:linear-gradient(135deg,#ef4444,#991b1b);border:3px solid var(--clr-primary);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+        .profile-meta h1{font-size:20px;font-weight:800;letter-spacing:-0.3px;}
+        .profile-meta p{font-size:12px;color:var(--text-tertiary);margin-top:2px;}
+        .threat-badge{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:var(--radius-full);font-size:11px;font-weight:700;background:var(--clr-danger-ghost);color:var(--clr-primary);}
+
+        /* Info grid */
+        .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
+        .info-item .ilabel{font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.4px;}
+        .info-item .ivalue{font-size:14px;font-weight:600;color:var(--text-primary);margin-top:3px;}
+
+        /* Scene box */
+        .scene-box{width:100%;min-height:180px;background:#111;border-radius:var(--radius-md);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#aaa;font-size:13px;gap:8px;border:2px dashed #333;}
+        .scene-box .cam{font-size:40px;opacity:0.4;}
+
+        /* Action buttons */
+        .actions{display:flex;gap:12px;flex-wrap:wrap;}
+        .btn{padding:10px 22px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition-fast);border:1px solid transparent;}
+        .btn-track{background:var(--clr-warning-ghost);color:var(--clr-warning);border-color:rgba(245,158,11,0.2);}
+        .btn-track:hover{background:var(--clr-warning);color:#fff;}
+        .btn-resolve{background:var(--clr-success-ghost);color:var(--clr-success);border-color:rgba(34,197,94,0.2);}
+        .btn-resolve:hover{background:var(--clr-success);color:#fff;}
+        .btn-dismiss{background:#f5f5f5;color:var(--text-secondary);border-color:var(--border-light);}
+        .btn-dismiss:hover{background:#e5e5e5;}
+
+        ::-webkit-scrollbar{width:6px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px;}
+
+        @media(max-width:800px){.main-content{margin-left:0;}.sidebar{display:none;}}
+    </style>
+</head>
+<body>
+<div id="app-shell">
+
+    <!-- SIDEBAR — same as security-threats.html -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">🛡️</div>
+                <div class="sidebar-logo-text">GeoVision <span>Campus Security</span></div>
+            </div>
+        </div>
+        <div class="sidebar-profile">
+            <div class="sidebar-avatar">AD</div>
+            <div class="sidebar-profile-info">
+                <div class="sidebar-profile-name">Admin</div>
+                <div class="sidebar-profile-role">Security Administrator</div>
+            </div>
+            <div class="sidebar-status-dot"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-label">Main Menu</div>
+            <a href="../index.html" class="sidebar-nav-item"><span class="sidebar-nav-icon">🏠</span> Dashboard</a>
+            <a href="cctv-feed.html" class="sidebar-nav-item"><span class="sidebar-nav-icon">📹</span> CCTV Feed</a>
+            <a href="entry-history.html" class="sidebar-nav-item"><span class="sidebar-nav-icon">🚪</span> Entry History</a>
+            <a href="security-threats.html" class="sidebar-nav-item active"><span class="sidebar-nav-icon">⚠️</span> Threats</a>
+            <a href="student-profile-system-upgraded.html" class="sidebar-nav-item"><span class="sidebar-nav-icon">👤</span> Student Profiles</a>
+            <div class="sidebar-nav-label" style="margin-top:16px">Enrolment</div>
+            <a href="face_capture_system.html" class="sidebar-nav-item"><span class="sidebar-nav-icon">📸</span> Face Capture</a>
+            <a href="../user/signup-details.html" class="sidebar-nav-item"><span class="sidebar-nav-icon">📝</span> Sign-Up Details</a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="sidebar-footer-btn" onclick="if(confirm('Logout?')) window.location='../index.html'">
+                <span>🚪</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <div class="topbar">
+            <a class="back-link" href="security-threats.html">← Back</a>
+            <div class="topbar-breadcrumb">GeoVision / Admin / Security Threats / <span>Threat Detail</span></div>
+        </div>
+
+        <div class="page-body">
+
+            <!-- Profile card -->
+            <div class="card">
+                <div class="profile-header">
+                    <div class="avatar">👤</div>
+                    <div class="profile-meta">
+                        <h1 id="p-name">Unknown Person</h1>
+                        <p>Identity not verified — no match found in database</p>
+                        <span class="threat-badge" id="p-threattype">Unrecognized Face</span>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="ilabel">Location Detected</div>
+                        <div class="ivalue" id="p-location">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="ilabel">Time of Entry</div>
+                        <div class="ivalue" id="p-entry">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="ilabel">Time of Exit</div>
+                        <div class="ivalue" id="p-exit">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="ilabel">Verification Status</div>
+                        <div class="ivalue" id="p-vstatus">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene screenshot -->
+            <div class="card">
+                <h2>Scene Screenshot</h2>
+                <div class="scene-box">
+                    <div class="cam">📷</div>
+                    <div>Camera feed placeholder</div>
+                    <div style="font-size:11px;color:#555;">Live screenshot will appear here</div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card">
+                <h2>Actions</h2>
+                <div class="actions">
+                    <button class="btn btn-track"   onclick="alert('Flagged for tracking')">Track</button>
+                    <button class="btn btn-resolve" onclick="alert('Marked as resolved')">Resolve</button>
+                    <button class="btn btn-dismiss" onclick="window.location='security-threats.html'">Dismiss</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    /* Fill page from URL params passed by security-threats.html */
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('type'))     document.getElementById('p-threattype').textContent = params.get('type');
+    if (params.get('location')) document.getElementById('p-location').textContent   = params.get('location');
+    if (params.get('entry'))    document.getElementById('p-entry').textContent      = params.get('entry');
+    if (params.get('exit'))     document.getElementById('p-exit').textContent       = params.get('exit');
+    if (params.get('vstatus'))  document.getElementById('p-vstatus').textContent    = params.get('vstatus');
+</script>
+</body>
+</html>
