@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Visitor Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Visitor Entry System</h1>
+
+        <!-- Dashboard -->
+        <div class="card">
+            <h3>Dashboard</h3>
+            <p>Total: <span id="total"></span></p>
+            <p>IN: <span id="inCount"></span></p>
+            <p>OUT: <span id="outCount"></span></p>
+        </div>
+
+        <!-- Add Visitor -->
+        <div class="card">
+            <h3>Add Visitor</h3>
+            <input type="text" id="name" placeholder="Enter Name">
+            <input type="text" id="purpose" placeholder="Enter Purpose"><br><br>
+
+            <video id="video" width="200" autoplay></video><br>
+            <button onclick="capture()">Capture</button>
+
+            <canvas id="canvas" width="200" height="150" style="display:none;"></canvas><br><br>
+
+            <button onclick="addVisitor()">Add Visitor</button>
+        </div>
+
+        <!-- Search -->
+        <div class="card">
+            <h3>Search</h3>
+            <input type="text" id="search" placeholder="Search..." onkeyup="searchVisitor()">
+        </div>
+
+        <!-- Visitor List -->
+        <div class="card">
+            <h3>Visitor List</h3>
+            <ul id="list"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
